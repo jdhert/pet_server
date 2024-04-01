@@ -73,9 +73,7 @@ public class PetController {
             imgPath = String.valueOf(petMapper.getPetImages(pet.getPetId()));
             petMapper.updatePet(pet);
         }
-        String currentDir = System.getProperty("user.dir");
-        Path parentDir = Paths.get(currentDir).getParent();
-        String uploadRootPath  = parentDir.resolve("images").toString();
+        String uploadRootPath = "/app/images";
         String fullPath = uploadRootPath  + imgPath;
         File file = new File(fullPath);
         if (file.exists()) {
@@ -98,9 +96,7 @@ public class PetController {
     public void RequestDiary(@PathVariable long petId) {
         String imgPath = String.valueOf(petMapper.getPetImages(petId));
         petMapper.deletePet(petId);
-        String currentDir = System.getProperty("user.dir");
-        Path parentDir = Paths.get(currentDir).getParent();
-        String uploadRootPath  = parentDir.resolve("images").toString();
+        String uploadRootPath = "/app/images";
         String fullPath = uploadRootPath + imgPath;
         File file = new File(fullPath);
         if (file.exists()) {
