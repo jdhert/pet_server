@@ -20,6 +20,8 @@ public class BoardService {
     @Autowired
     BoardMapper boardMapper;
 
+    private static final String frontendUrl = System.getenv("FRONTEND_URL");
+
     public List<BoardInfo> boardInfos(long id, int page){
         return boardMapper.getMyLike(id, (page-1) * 10);
     }
@@ -48,20 +50,22 @@ public class BoardService {
     public ResponseEntity<List<String>> getImages(long boardId) {
         List<String> images = boardMapper.getImages(boardId);
         List<String> imageUrls = images.stream()
-                .map(path -> ServletUriComponentsBuilder.fromCurrentContextPath()
-                        .path("/images/")
-                        .path(path)
-                        .toUriString())
-                .map(encodedUrl -> URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8)) // URL 디코딩
+                .map(path -> frontendUrl + "/images/" + path)
                 .collect(Collectors.toList());
+//                .map(path -> ServletUriComponentsBuilder.fromCurrentContextPath()
+//                        .path("/images/")
+//                        .path(path)
+//                        .toUriString())
+//                .map(encodedUrl -> URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8)) // URL 디코딩
+//                .collect(Collectors.toList());
         return ResponseEntity.ok(imageUrls);
     }
 
-    public List<BoardInfo> getMyBoards(long id, int subject, int page){
-        int maxPage=10;
-        int offset;
-        int limit = 10;
-        offset = (page - 1) * maxPage;
-        return boardMapper.getMyBoards(id, subject);
-    }
+//    public List<BoardInfo> getMyBoards(long id, int subject, int page){
+//        int maxPage=10;
+//        int offset;
+//        int limit = 10;
+//        offset = (page - 1) * maxPage;
+//        return boardMapper.getMyBoards(id, subject);
+//    }
 }

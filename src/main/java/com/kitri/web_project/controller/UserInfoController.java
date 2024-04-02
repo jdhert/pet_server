@@ -22,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/myinfo")
@@ -31,6 +32,8 @@ public class UserInfoController {
     UserMapper userMapper;
 
     private final UserInfoService userInfoService;
+
+    private static final String frontendUrl = System.getenv("FRONTEND_URL");
 
     @Autowired
     public UserInfoController(UserInfoService userInfoService){
@@ -118,11 +121,12 @@ public class UserInfoController {
         if (images.startsWith("http")) {
             return ResponseEntity.ok(images);
         } else {
-            String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/images/")
-                    .path(images)
-                    .toUriString();
-            imageUrl = URLDecoder.decode(imageUrl, StandardCharsets.UTF_8); // URL 디코딩
+//            String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+//                    .path("/images/")
+//                    .path(images)
+//                    .toUriString();
+//            imageUrl = URLDecoder.decode(imageUrl, StandardCharsets.UTF_8); // URL 디코딩
+            String imageUrl = frontendUrl + "/images/" + images;
             return ResponseEntity.ok(imageUrl);
         }
     }
@@ -159,12 +163,14 @@ public class UserInfoController {
         }
 
         List<String> imageUrls = images.stream()
-                .map(path -> ServletUriComponentsBuilder.fromCurrentContextPath()
-                        .path("/images/")
-                        .path(path)
-                        .toUriString())
-                .map(encodedUrl -> URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8)) // URL 디코딩
+                .map(path -> frontendUrl + "/images/" + path)
                 .toList();
+//                .map(path -> ServletUriComponentsBuilder.fromCurrentContextPath()
+//                        .path("/images/")
+//                        .path(path)
+//                        .toUriString())
+//                .map(encodedUrl -> URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8)) // URL 디코딩
+//                .toList();
         for (int i = 0; i < imageUrls.size(); i++) {
             imageList.get(i).setImgPath(imageUrls.get(i));
         }
@@ -245,11 +251,15 @@ public class UserInfoController {
         return userInfoService.passwordVerify(id, password);
     }
 
-    private String decodeImageUrl(String encodedUrl) {
-        return URLDecoder.decode(ServletUriComponentsBuilder.fromCurrentContextPath()
-                        .path("/images/")
-                        .path(encodedUrl)
-                        .toUriString(),
-                StandardCharsets.UTF_8);
+
+    private String decodeImageUrl(String imagePath) {
+        return frontendUrl + "/images/" + imagePath;
     }
+//    private String decodeImageUrl(String encodedUrl) {
+//        return URLDecoder.decode(ServletUriComponentsBuilder.fromCurrentContextPath()
+//                        .path("/images/")
+//                        .path(encodedUrl)
+//                        .toUriString(),
+//                StandardCharsets.UTF_8);
+//    }
 }

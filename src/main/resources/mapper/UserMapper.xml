@@ -30,8 +30,7 @@
         <result property="name" column="nick_name" />
         <result property="password" column="password" />
         <result property="address" column="address" />
-        <result property="imgPath" column="img_pat
-        h" />
+        <result property="imgPath" column="img_path" />
     </resultMap>
 
     <select id="findByEmail" resultMap="userResultMap">

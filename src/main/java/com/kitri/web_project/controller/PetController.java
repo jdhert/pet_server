@@ -27,6 +27,7 @@ public class PetController {
     @Autowired
     private PetMapper petMapper;
 
+    private static final String frontendUrl = System.getenv("FRONTEND_URL");
 
     @PostMapping
     public void addPet(@RequestBody RequestPet pet) {
@@ -37,12 +38,14 @@ public class PetController {
     public ResponseEntity<List<String>> getImages(@PathVariable long id){
         List<String> images = petMapper.getImages(id);
         List<String> imageUrls = images.stream()
-                .map(path -> ServletUriComponentsBuilder.fromCurrentContextPath()
-                        .path("/images/")
-                        .path(path)
-                        .toUriString())
-                .map(encodedUrl -> URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8)) // URL 디코딩
+                .map(path -> frontendUrl + "/images/" + path)
                 .collect(Collectors.toList());
+//                .map(path -> ServletUriComponentsBuilder.fromCurrentContextPath()
+//                        .path("/images/")
+//                        .path(path)
+//                        .toUriString())
+//                .map(encodedUrl -> URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8)) // URL 디코딩
+//                .collect(Collectors.toList());
         return ResponseEntity.ok(imageUrls);
     }
 
@@ -50,12 +53,14 @@ public class PetController {
     public ResponseEntity<List<String>> getPetImages(@PathVariable long petId){
         List<String> images = petMapper.getPetImages(petId);
         List<String> imageUrls = images.stream()
-                .map(path -> ServletUriComponentsBuilder.fromCurrentContextPath()
-                        .path("/images/")
-                        .path(path)
-                        .toUriString())
-                .map(encodedUrl -> URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8)) // URL 디코딩
+                .map(path -> frontendUrl + "/images/" + path)
                 .collect(Collectors.toList());
+//                .map(path -> ServletUriComponentsBuilder.fromCurrentContextPath()
+//                        .path("/images/")
+//                        .path(path)
+//                        .toUriString())
+//                .map(encodedUrl -> URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8)) // URL 디코딩
+//                .collect(Collectors.toList());
         return ResponseEntity.ok(imageUrls);
     }
 
@@ -131,11 +136,13 @@ public class PetController {
     }
     // URL 디코딩 메서드
     private String decodeImageUrl(String encodedUrl) {
-        return URLDecoder.decode(ServletUriComponentsBuilder.fromCurrentContextPath()
-                        .path("/images/")
-                        .path(encodedUrl)
-                        .toUriString(),
-                StandardCharsets.UTF_8);
+//        return URLDecoder.decode(ServletUriComponentsBuilder.fromCurrentContextPath()
+//                        .path("/images/")
+//                        .path(encodedUrl)
+//                        .toUriString(),
+//                StandardCharsets.UTF_8);
+            return frontendUrl + "/images/" + encodedUrl;
+
     }
 
 }

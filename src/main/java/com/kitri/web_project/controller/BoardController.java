@@ -18,6 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,8 @@ public class BoardController {
     @Autowired
     BoardMapper boardMapper;
 
+
+    private static final String frontendUrl = System.getenv("FRONTEND_URL");
 
     private final BoardService boardService;
 
@@ -89,12 +92,14 @@ public class BoardController {
     public ResponseEntity<List<String>> getImages(@PathVariable long boardId){
         List<String> images = boardMapper.getImages(boardId);
         List<String> imageUrls = images.stream()
-                .map(path -> ServletUriComponentsBuilder.fromCurrentContextPath()
-                        .path("/images/")
-                        .path(path)
-                        .toUriString())
-                .map(encodedUrl -> URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8)) // URL 디코딩
+                .map(path -> frontendUrl + "/images/" + path)
                 .collect(Collectors.toList());
+//                .map(path -> ServletUriComponentsBuilder.fromCurrentContextPath()
+//                        .path("/images/")
+//                        .path(path)
+//                        .toUriString())
+//                .map(encodedUrl -> URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8)) // URL 디코딩
+//                .collect(Collectors.toList());
         return ResponseEntity.ok(imageUrls);
     }
 
@@ -153,6 +158,7 @@ public class BoardController {
 //                String encodedFileName = URLEncoder.encode(uploadFileName, StandardCharsets.UTF_8);
 //                String s1 = savePath + "/" + encodedFileName;
 //                s.add(s1);
+
                 String filePath = uploadRootPath + "/" + uploadFileName;
                 File dest = new File(filePath);
                 file.transferTo(dest);
@@ -174,12 +180,14 @@ public class BoardController {
             images.add(bs.getImagePath());
         }
         List<String> imageUrls = images.stream()
-                .map(path -> ServletUriComponentsBuilder.fromCurrentContextPath()
-                        .path("/images/")
-                        .path(path)
-                        .toUriString())
-                .map(encodedUrl -> URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8)) // URL 디코딩
+                .map(path -> frontendUrl + "/images/" + path)
                 .toList();
+//                .map(path -> ServletUriComponentsBuilder.fromCurrentContextPath()
+//                        .path("/images/")
+//                        .path(path)
+//                        .toUriString())
+//                .map(encodedUrl -> URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8)) // URL 디코딩
+//                .toList();
         for (int i = 0; i < imageUrls.size(); i++) {
             imageList.get(i).setImagePath(imageUrls.get(i));
         }
