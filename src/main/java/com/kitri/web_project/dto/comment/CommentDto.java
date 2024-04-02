@@ -22,4 +22,6 @@ public class CommentDto {
     boolean subject;
     int child;
 
+    int totalRowCount;
+
 }

@@ -26,12 +26,14 @@
         select count(*) from free_board_comment where parent_comment_id = #{id}
     </select>
 
-    <select id="getMyComments" parameterType="long" resultType="com.kitri.web_project.dto.comment.CommentDto">
-        SELECT fbc.id as id, fbc.user_id as userId, fbc.board_id as boardId, fbc.content, fbc.created_at as createdAt, fbc.like_count as likeCount, fb.subject
+    <select id="getMyComments" resultType="com.kitri.web_project.dto.comment.CommentDto">
+        SELECT fbc.id as id, fbc.user_id as userId, fbc.board_id as boardId, fbc.content, fbc.created_at as createdAt, fbc.like_count as likeCount, fb.subject,
+               (SELECT COUNT(*) FROM free_board_comment WHERE user_id = #{id}) AS totalRowCount
         FROM free_board_comment fbc
         JOIN free_board fb ON fbc.board_id = fb.id
         WHERE fbc.user_id = #{id}
         ORDER BY fbc.created_at desc
+        LIMIT #{offset}, #{itemsPerPage}
     </select>
 
     <insert id="addComment" parameterType="com.kitri.web_project.dto.comment.RequestComment">

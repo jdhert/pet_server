@@ -35,8 +35,9 @@ public class CommentController {
     }
 
     @GetMapping("/mycomment/{id}")
-    public List<CommentDto> getFreeComments(@PathVariable long id){
-        return commentMapper.getMyComments(id);
+    public List<CommentDto> getFreeComments(@PathVariable long id, @RequestParam int page, @RequestParam int itemsPerPage){
+        int offset = (page - 1) * itemsPerPage;
+        return commentMapper.getMyComments(id, offset, itemsPerPage);
     }
 
     @PostMapping

@@ -4,8 +4,6 @@ import com.kitri.web_project.dto.comment.CommentDto;
 import com.kitri.web_project.dto.comment.RequestComment;
 import com.kitri.web_project.dto.comment.RequestReplyComment;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.eclipse.tags.shaded.org.apache.regexp.RE;
 
 import java.util.List;
 
@@ -14,7 +12,7 @@ public interface CommentMapper {
 //    List<CommentDto> getComments(long id);
     List<CommentDto> getTopLevelComments(long id);
     List<CommentDto> getChildComments(long id, long parentCommentId);
-    List<CommentDto> getMyComments(long id);
+    List<CommentDto> getMyComments(long id, int offset, int itemsPerPage);
 
     void addComment(RequestComment requestComment);
     void addCommentCount(long boardId);

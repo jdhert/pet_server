@@ -141,13 +141,15 @@
 
 
     <select id="getMyBoards" parameterType="com.kitri.web_project.dto.board.RequestMyBoard" resultType="com.kitri.web_project.dto.board.BoardInfo">
-        select free_board.id as id, <include refid="responseColumns" />,
-        free_board.user_id as userId,
-        (select COUNT(*) FROM free_board where subject = #{subject} and user_id = #{id}) AS totalRowCount,
-        nick_name as writer
-        from free_board join user on user.id = user_id
-        WHERE subject = #{subject} and user.id = #{id}
-        order by created_at desc
+        SELECT free_board.id AS id, <include refid="responseColumns" />,
+                free_board.user_id AS userId,
+                (SELECT COUNT(*) FROM free_board WHERE subject = #{subject} AND user_id = #{id}) AS totalRowCount,
+                nick_name AS writer
+        FROM free_board
+        JOIN user ON user.id = user_id
+        WHERE subject = #{subject} AND user.id = #{id}
+        ORDER BY created_at DESC
+        LIMIT #{offset}, #{itemsPerPage}
     </select>
 
 

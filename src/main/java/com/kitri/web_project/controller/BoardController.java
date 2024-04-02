@@ -4,18 +4,13 @@ import com.kitri.web_project.dto.board.BoardInfo;
 import com.kitri.web_project.dto.board.RequestBoard;
 import com.kitri.web_project.dto.board.RequestBoardLike;
 import com.kitri.web_project.dto.board.UpdateBoard;
-import com.kitri.web_project.dto.diary.DiaryImgDto;
-import com.kitri.web_project.dto.diary.RequestDiary;
 import com.kitri.web_project.dto.image.RequestImage;
 import com.kitri.web_project.mappers.BoardMapper;
 import com.kitri.web_project.service.BoardService;
-import org.eclipse.tags.shaded.org.apache.regexp.RE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -23,10 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -124,11 +116,12 @@ public class BoardController {
         boardMapper.deleteAllImgs(id);
     }
 
-
     @GetMapping("/getMyBoard/{id}")
-    public List<BoardInfo> getMyBoard(@RequestParam int subject, @RequestParam int page, @PathVariable long id) {
-        return boardService.getMyBoards(id, subject, page);
+    public List<BoardInfo> getMyBoard(@RequestParam int subject, @RequestParam int page, @RequestParam int itemsPerPage, @PathVariable long id) {
+        int offset = (page - 1) * itemsPerPage;
+        return boardMapper.getMyBoards(id, subject, offset, itemsPerPage);
     }
+
     @GetMapping("/popular")
     public List<BoardInfo> getPopularBoard(int subject) {
         return boardService.popularBoards(subject);
@@ -219,8 +212,6 @@ public class BoardController {
             boardMapper.decrementCommentLikeCount(commentId);
         }
     }
-
-
 
     public void ImageSet(List<BoardInfo> bm){
         for(BoardInfo b : bm){

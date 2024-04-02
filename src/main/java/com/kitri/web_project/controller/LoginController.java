@@ -8,6 +8,8 @@ import com.kitri.web_project.service.LoginService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
@@ -28,22 +30,29 @@ public class LoginController {
 
 
     @PostMapping
-    public Long Log(@RequestBody LoginUser loginUser, HttpServletResponse response){
+    public ResponseEntity<Long> Log(@RequestBody LoginUser loginUser, HttpServletResponse response) {
         ResponseClient responseUsers = userMapper.findByEmail(loginUser.getEmail(), false);
-        if(responseUsers == null)
-            return 0L;
-        if(!Objects.equals(loginUser.getPassword(), responseUsers.getPassword()))
-            return 0L;
+//        if(responseUsers == null)
+//            return 0L;
+//        if(!Objects.equals(loginUser.getPassword(), responseUsers.getPassword()))
+//            return 0L;
+        if (responseUsers == null || !Objects.equals(loginUser.getPassword(), responseUsers.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(0L);
+        }
         if(!responseUsers.getSocial()) {
             CookieSet(response, responseUsers, loginUser.getAutologin());
+                // 만약 자동로그인 체크했을 경우 autologinCookie 생성
                 if (loginUser.getAutologin() != null && loginUser.getAutologin()) {
                 Cookie autologinCookie = new Cookie("autologin", "true");
                 autologinCookie.setMaxAge(7 * 24 * 60 * 60); // 7 days in seconds
                 autologinCookie.setPath("/");
                 response.addCookie(autologinCookie);
             }
-            return responseUsers.getId();
-        } return 0L;
+//            return responseUsers.getId();
+            return ResponseEntity.ok(responseUsers.getId());
+        }
+//        return 0L;
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(0L);
     }
 
     @GetMapping("/logout")

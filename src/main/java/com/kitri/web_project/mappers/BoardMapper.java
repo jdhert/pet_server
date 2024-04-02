@@ -3,7 +3,6 @@ package com.kitri.web_project.mappers;
 import com.kitri.web_project.dto.board.BoardInfo;
 import com.kitri.web_project.dto.board.RequestBoard;
 import com.kitri.web_project.dto.board.UpdateBoard;
-import com.kitri.web_project.dto.diary.DiaryImgDto;
 import com.kitri.web_project.dto.image.RequestImage;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -32,7 +31,7 @@ public interface BoardMapper {
 
     void deleteTags(long id);
 
-    List<BoardInfo> getMyBoards(long id, int subject);
+    List<BoardInfo> getMyBoards(long id, int subject, int offset, int itemsPerPage);
 
     void incrementLikeCount(long postId);
     void decrementLikeCount(long postId);
